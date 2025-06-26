@@ -77,14 +77,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Middleware de restricción por IP pública
-var allowedIp = "187.155.101.200"; // IP pública de la universidad
+// Lista de IPs públicas permitidas
+var allowedIps = new[] { "187.155.101.200", "TU_OTRA_IP" }; // Agrega aquí todas las IPs públicas permitidas
 app.Use(async (context, next) =>
 {
     var remoteIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
                    ?? context.Connection.RemoteIpAddress?.ToString();
 
-    if (remoteIp != allowedIp)
+    if (!allowedIps.Contains(remoteIp))
     {
         context.Response.StatusCode = 403; // Forbidden
         await context.Response.WriteAsync("Acceso denegado: IP no permitida.");
