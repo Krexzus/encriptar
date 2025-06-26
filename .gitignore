@@ -1,0 +1,14 @@
+# Archivos de credenciales
+encryptdecrypt.json
+
+# Archivos y carpetas típicas de .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de configuración de Rider/VSCode
+.idea/
+.vscode/ 
