@@ -81,13 +81,16 @@ var app = builder.Build();
 var allowedIps = new[] { "187.155.101.200", "TU_OTRA_IP" }; // Agrega aquí todas las IPs públicas permitidas
 app.Use(async (context, next) =>
 {
-    var remoteIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+    var remoteIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',')[0].Trim()
                    ?? context.Connection.RemoteIpAddress?.ToString();
+
+    // Log temporal para ver la IP real
+    Console.WriteLine($"IP detectada: {remoteIp}");
 
     if (!allowedIps.Contains(remoteIp))
     {
         context.Response.StatusCode = 403; // Forbidden
-        await context.Response.WriteAsync("Acceso denegado: IP no permitida.");
+        await context.Response.WriteAsync($"Acceso denegado: IP no permitida. Tu IP detectada es: {remoteIp}");
         return;
     }
 
