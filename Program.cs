@@ -77,10 +77,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Swagger siempre disponible
-app.UseSwagger();
-app.UseSwaggerUI();
-
 // Middleware de restricción por IP pública
 var allowedIp = "187.155.101.200"; // IP pública de la universidad
 app.Use(async (context, next) =>
@@ -98,8 +94,12 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run(); 
