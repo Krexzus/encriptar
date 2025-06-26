@@ -81,8 +81,24 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("AllowAll");
+// Middleware de restricción por IP pública
+var allowedIp = "187.155.101.200"; // IP pública de la universidad
+app.Use(async (context, next) =>
+{
+    var remoteIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                   ?? context.Connection.RemoteIpAddress?.ToString();
 
+    if (remoteIp != allowedIp)
+    {
+        context.Response.StatusCode = 403; // Forbidden
+        await context.Response.WriteAsync("Acceso denegado: IP no permitida.");
+        return;
+    }
+
+    await next.Invoke();
+});
+
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
